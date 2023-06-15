@@ -5,8 +5,17 @@ df = pd.read_excel(
 ).fillna("")
 
 data = df.to_dict()
-print(data)
+sorted = {}
 
+for index, nom in enumerate(data["Unnamed: 0"].values()):
+    if not nom:
+        break
+    sorted[index] = [nom]
+
+for col in range(1, 32):
+    print(col, data[col])
+
+# print(sorted)
 
 data_sample = {
     "Unnamed: 0": {
