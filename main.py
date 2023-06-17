@@ -3,62 +3,62 @@ import re
 import pandas as pd
 
 
-def compute_results(res):
-    for key in res.keys():
+def compute_results(mapping):
+    for pattern in mapping.keys():
         types = []
-        for t in key:
+        for t in pattern:
             if t[1]:
                 types.append(t[0])
         if types:
-            print(f"LOT={','.join(res[key])};TYP={','.join(types)}")
+            print(f"LOT={','.join(mapping[pattern])};TYP={','.join(types)}")
 
 
-def parse_lot_column(rows, data):
+def parse_by_type(types, data):
     res = {}
-    for key in data:
-        vals = list(data[key].values())[: len(rows)]
-        comb = tuple(zip(rows, vals))
+    for lot in data:
+        vals = list(data[lot].values())[: len(types)]
+        comb = tuple(zip(types, vals))
         if comb not in res:
-            res[comb] = [str(key)]
+            res[comb] = [str(lot)]
         else:
-            res[comb].append(str(key))
+            res[comb].append(str(lot))
 
     compute_results(res)
 
 
-def parse_lot_row(rows, data):
-    res = {}
+def parse_by_lot(lots, data):
+    mapping = {}
     col_vals = [list(x.values()) for x in data.values()]
     row_vals = zip(*col_vals)
 
     for index, vals in enumerate(row_vals):
-        comb = tuple(zip(data.keys(), vals))
-        if comb not in res:
-            res[comb] = [str(rows[index])]
+        pattern = tuple(zip(data.keys(), vals))
+        if pattern not in mapping:
+            mapping[pattern] = [str(lots[index])]
         else:
-            res[comb].append(str(rows[index]))
+            mapping[pattern].append(str(lots[index]))
 
-    compute_results(res)
+    compute_results(mapping)
 
 
-def parse(file_name, sheet_name=0, lot_direction="col"):
+def parse(file_name, sheet_name=0, parse_by="type"):
     df = pd.read_excel(file_name, sheet_name, header=1).fillna("")
     df_dic = df.to_dict()
-    rows = []
+    row_headers = []
 
-    for typ in df_dic["Unnamed: 0"].values():
-        if not typ:
+    for value in df_dic["Unnamed: 0"].values():
+        if not value:
             break
-        rows.append(typ)
+        row_headers.append(value)
 
     regex = re.compile(r"^Unnamed.*")
     data = {
         str(key): value for key, value in df_dic.items() if not regex.match(str(key))
     }
-    if lot_direction.lower() == "row":
-        parse_lot_row(rows, data)
+    if parse_by.lower() == "lot":
+        parse_by_lot(row_headers, data)
     else:
-        parse_lot_column(rows, data)
+        parse_by_type(row_headers, data)
 
 
 if __name__ == "__main__":
