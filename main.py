@@ -41,29 +41,36 @@ def parse_by_lot(lots, data):
     compute_results(mapping)
 
 
-def parse(file_name, sheet_name=None, parse_by="lot"):
-    df = pd.read_excel(file_name, sheet_name, header=1)
+def parse(file_name, parse_by="lot"):
+    df = pd.read_excel(file_name, header=1, sheet_name=None)
 
     for sheet in df.items():
-        df_dic = sheet[1].fillna("").to_dict()
-        row_headers = []
-
-        for value in df_dic["Unnamed: 0"].values():
-            if not value:
-                break
-            row_headers.append(value)
-
-        regex = re.compile(r"^Unnamed.*")
-        data = {
-            str(key): value for key, value in df_dic.items() if not regex.match(str(key))
-        }
-
-        print(sheet[0])
         if parse_by.lower() == "lot":
+            df_dic = sheet[1].fillna("").to_dict()
+            row_headers = []
+
+            for value in df_dic["Unnamed: 0"].values():
+                if not value:
+                    break
+                row_headers.append(value)
+
+            regex = re.compile(r"^Unnamed.*")
+            data = {
+                str(key): value
+                for key, value in df_dic.items()
+                if not regex.match(str(key))
+            }
+            print(sheet[0])
             parse_by_lot(row_headers, data)
+            print()
         else:
-            parse_by_type(row_headers, data)
-        print()
+            df_dic = sheet[1].fillna("").to_dict()
+            row_headers = [x for x in list(df_dic["Unnamed: 0"].values()) if x]
+            df_dic.pop("Unnamed: 0")
+            df_dic.pop("Unnamed: 1")
+            print(sheet[0])
+            parse_by_type(row_headers, df_dic)
+            print()
 
 
 if __name__ == "__main__":
