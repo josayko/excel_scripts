@@ -5,17 +5,20 @@ from tkinterdnd2 import *
 
 def get_path(event):
     pathLabel.configure(text = event.data)
+    temp = event.data[1:-1]
+    tokens = temp.split("} {")
+    print("DEBUG: ", tokens)
 
 root = TkinterDnD.Tk()
 root.geometry("350x100")
-root.title("Get file path")
+root.title("SOFYA tools - Matrix reader")
 
 nameVar = StringVar()
 
 entryWidget = Entry(root)
 entryWidget.pack(side=TOP, padx=5, pady=5)
 
-pathLabel = Label(root, text="Drag and drop file in the entry box")
+pathLabel = Label(root, text="Drag and drop files in the entry box")
 pathLabel.pack(side=TOP)
 
 entryWidget.drop_target_register(DND_ALL)
