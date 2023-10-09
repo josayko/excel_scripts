@@ -10,7 +10,8 @@ def compute_results(mapping):
             if t[1]:
                 types.append(t[0])
         if types:
-            print(f"LOT={','.join(mapping[pattern])};TYP={','.join(types)}")
+            return f"LOT={','.join(mapping[pattern])};TYP={','.join(types)}"
+    return ""
 
 
 def parse_by_type(types, data):
@@ -23,7 +24,7 @@ def parse_by_type(types, data):
         else:
             res[comb].append(str(lot))
 
-    compute_results(res)
+    return compute_results(res)
 
 
 def parse_by_lot(lots, data):
@@ -38,7 +39,7 @@ def parse_by_lot(lots, data):
         else:
             mapping[pattern].append(str(lots[index]))
 
-    compute_results(mapping)
+    return compute_results(mapping)
 
 
 def parse(file_name, parse_by="lot"):
@@ -60,17 +61,14 @@ def parse(file_name, parse_by="lot"):
                 for key, value in df_dic.items()
                 if not regex.match(str(key))
             }
-            print(sheet[0])
-            parse_by_lot(row_headers, data)
-            print()
+            return sheet[0], parse_by_lot(row_headers, data)
         else:
             df_dic = sheet[1].fillna("").to_dict()
             row_headers = [x for x in list(df_dic["Unnamed: 0"].values()) if x]
             df_dic.pop("Unnamed: 0")
             df_dic.pop("Unnamed: 1")
-            print(sheet[0])
-            parse_by_type(row_headers, df_dic)
-            print()
+            return sheet[0], parse_by_type(row_headers, df_dic)
+    return ""
 
 
 if __name__ == "__main__":

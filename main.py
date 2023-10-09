@@ -1,29 +1,39 @@
-from tkinter import TOP, Entry, Label, StringVar
+from tkinter import TOP, BOTTOM, Entry, Label, Text, StringVar
 from tkinterdnd2 import *
-from matrix_parser import parse
+from matrix_parser import parser
+
 
 def get_path(event):
-    pathLabel.configure(text = event.data)
     temp = event.data[1:-1]
     tokens = temp.split("} {")
-    print("DEBUG: ", tokens)
-
+    label.configure(text=tokens)
     for path in tokens:
-        parse(path, "typ")
+        var = StringVar()
+        sheetName, result = parser.parse(path, "typ")
+        var.set(sheetName + "\n" + result + "\n")
+        resultsWidget.configure(textvariable=var)
+        print(var.get())
 
-root = TkinterDnD.Tk()
-root.geometry("350x100")
-root.title("SOFYA tools - Matrix reader")
+
+window = TkinterDnD.Tk()
+window.geometry("350x100")
+window.title("SOFYA tools - Matrix reader")
 
 nameVar = StringVar()
 
-entryWidget = Entry(root)
+entryWidget = Entry(window)
 entryWidget.pack(side=TOP, padx=5, pady=5)
 
-pathLabel = Label(root, text="Drag and drop files in the entry box")
-pathLabel.pack(side=TOP)
+label = Label(window, text="Drag and drop files in the entry box")
+label.pack(side=TOP)
+
+var = StringVar()
+var.set("Some text")
+resultsWidget = Entry(window, state="readonly", width=100)
+resultsWidget.pack(side=TOP)
+
 
 entryWidget.drop_target_register(DND_ALL)
 entryWidget.dnd_bind("<<Drop>>", get_path)
 
-root.mainloop()
+window.mainloop()
