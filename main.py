@@ -1,78 +1,29 @@
-import sys
-import re
-import pandas as pd
+from tkinter import TOP, Entry, Label, StringVar
+from tkinterdnd2 import *
+from matrix_parser import parse
 
+def get_path(event):
+    pathLabel.configure(text = event.data)
+    temp = event.data[1:-1]
+    tokens = temp.split("} {")
+    print("DEBUG: ", tokens)
 
-def compute_results(mapping):
-    for pattern in mapping.keys():
-        types = []
-        for t in pattern:
-            if t[1]:
-                types.append(t[0])
-        if types:
-            print(f"LOT={','.join(mapping[pattern])};TYP={','.join(types)}")
+    for path in tokens:
+        parse(path, "typ")
 
+root = TkinterDnD.Tk()
+root.geometry("350x100")
+root.title("SOFYA tools - Matrix reader")
 
-def parse_by_type(types, data):
-    res = {}
-    for lot in data:
-        vals = list(data[lot].values())[: len(types)]
-        comb = tuple(zip(types, vals))
-        if comb not in res:
-            res[comb] = [str(lot)]
-        else:
-            res[comb].append(str(lot))
+nameVar = StringVar()
 
-    compute_results(res)
+entryWidget = Entry(root)
+entryWidget.pack(side=TOP, padx=5, pady=5)
 
+pathLabel = Label(root, text="Drag and drop files in the entry box")
+pathLabel.pack(side=TOP)
 
-def parse_by_lot(lots, data):
-    mapping = {}
-    col_vals = [list(x.values()) for x in data.values()]
-    row_vals = zip(*col_vals)
+entryWidget.drop_target_register(DND_ALL)
+entryWidget.dnd_bind("<<Drop>>", get_path)
 
-    for index, vals in enumerate(row_vals):
-        pattern = tuple(zip(data.keys(), vals))
-        if pattern not in mapping:
-            mapping[pattern] = [str(lots[index])]
-        else:
-            mapping[pattern].append(str(lots[index]))
-
-    compute_results(mapping)
-
-
-def parse(file_name, parse_by="lot"):
-    df = pd.read_excel(file_name, header=1, sheet_name=None)
-
-    for sheet in df.items():
-        if parse_by.lower() == "lot":
-            df_dic = sheet[1].fillna("").to_dict()
-            row_headers = []
-
-            for value in df_dic["Unnamed: 0"].values():
-                if not value:
-                    break
-                row_headers.append(value)
-
-            regex = re.compile(r"^Unnamed.*")
-            data = {
-                str(key): value
-                for key, value in df_dic.items()
-                if not regex.match(str(key))
-            }
-            print(sheet[0])
-            parse_by_lot(row_headers, data)
-            print()
-        else:
-            df_dic = sheet[1].fillna("").to_dict()
-            row_headers = [x for x in list(df_dic["Unnamed: 0"].values()) if x]
-            df_dic.pop("Unnamed: 0")
-            df_dic.pop("Unnamed: 1")
-            print(sheet[0])
-            parse_by_type(row_headers, df_dic)
-            print()
-
-
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        parse(*sys.argv[1:])
+root.mainloop()

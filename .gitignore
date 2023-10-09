@@ -1,3 +1,4 @@
 *.xlsx*
 tags
 .env
+__pycache__
