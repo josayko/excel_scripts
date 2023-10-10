@@ -1,4 +1,4 @@
-from tkinter import TOP, BOTTOM, Entry, Label, Text, StringVar
+from tkinter import TOP, BOTTOM, IntVar, Checkbutton, Entry, Label, Text, StringVar
 from tkinterdnd2 import *
 from matrix_parser import parser
 
@@ -7,6 +7,13 @@ def get_path(event):
     temp = event.data[1:-1]
     tokens = temp.split("} {")
     label.configure(text=tokens)
+
+    if var1.get() == 1:
+        print("enable")
+
+    if var1.get() == 0:
+        print("disable")
+
     for path in tokens:
         var = StringVar()
         sheetName, result = parser.parse(path, "typ")
@@ -32,6 +39,9 @@ var.set("Some text")
 resultsWidget = Entry(window, state="readonly", width=100)
 resultsWidget.pack(side=TOP)
 
+var1 = IntVar(value=1)
+c1 = Checkbutton(window, text="typ", variable=var1, onvalue=1, offvalue=0)
+c1.pack()
 
 entryWidget.drop_target_register(DND_ALL)
 entryWidget.dnd_bind("<<Drop>>", get_path)
