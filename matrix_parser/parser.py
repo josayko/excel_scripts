@@ -44,6 +44,7 @@ def parse_by_lot(lots, data):
 
 def parse(file_name, parse_by="lot"):
     df = pd.read_excel(file_name, header=1, sheet_name=None)
+    results = {}
 
     for sheet in df.items():
         if parse_by.lower() == "lot":
@@ -61,14 +62,14 @@ def parse(file_name, parse_by="lot"):
                 for key, value in df_dic.items()
                 if not regex.match(str(key))
             }
-            return sheet[0], parse_by_lot(row_headers, data)
+            results[sheet[0]] = parse_by_lot(row_headers, data)
         else:
             df_dic = sheet[1].fillna("").to_dict()
             row_headers = [x for x in list(df_dic["Unnamed: 0"].values()) if x]
             df_dic.pop("Unnamed: 0")
             df_dic.pop("Unnamed: 1")
-            return sheet[0], parse_by_type(row_headers, df_dic)
-    return ""
+            results[sheet[0]] = parse_by_type(row_headers, df_dic)
+    return results
 
 
 if __name__ == "__main__":
