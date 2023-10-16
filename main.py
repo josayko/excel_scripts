@@ -18,10 +18,12 @@ def get_path(event):
             formatted = formatted + "\n" + result[0] + "\n" + result[1] + "\n"
         var.set(formatted)
         resultsWidget.configure(textvariable=var)
-        printToFile + path + var.get()
-        print(path, var.get())
+        printToFile = (
+            printToFile + "\n------------------------------\n" + path + var.get()
+        )
+        # print(path, var.get())
 
-    with open("results.txt", "a") as f:
+    with open("results.txt", "w") as f:
         f.write(printToFile)
 
 
