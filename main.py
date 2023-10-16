@@ -1,7 +1,6 @@
 from tkinter import TOP, IntVar, Checkbutton, Entry, Label, Text, StringVar
 from tkinterdnd2 import *
 from matrix_parser import parser
-import json
 
 
 def get_path(event):
@@ -21,7 +20,7 @@ def get_path(event):
         printToFile = (
             printToFile + "\n------------------------------\n" + path + var.get()
         )
-        # print(path, var.get())
+        print(path, var.get())
 
     with open("results.txt", "w") as f:
         f.write(printToFile)

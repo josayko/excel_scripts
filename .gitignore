@@ -2,3 +2,4 @@
 tags
 .env
 __pycache__
+*.txt

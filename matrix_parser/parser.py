@@ -4,14 +4,19 @@ import pandas as pd
 
 
 def compute_results(mapping):
+    computed = ""
     for pattern in mapping.keys():
         types = []
         for t in pattern:
             if t[1]:
                 types.append(t[0])
         if types:
-            return f"LOT={','.join(mapping[pattern])};TYP={','.join(types)}"
-    return ""
+            computed = (
+                computed
+                + f"LOT={','.join(mapping[pattern])};TYP={','.join(types)}"
+                + "\n"
+            )
+    return computed
 
 
 def parse_by_type(types, data):
