@@ -3,3 +3,4 @@ tags
 .env
 __pycache__
 *.txt
+env/
