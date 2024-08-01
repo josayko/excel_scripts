@@ -1,5 +1,7 @@
-from tkinter import TOP, IntVar, Checkbutton, Entry, Label, Text, StringVar
+from tkinter import TOP, Checkbutton, Entry, IntVar, Label, StringVar, Text
+
 from tkinterdnd2 import *
+
 from matrix_parser import parser
 
 
