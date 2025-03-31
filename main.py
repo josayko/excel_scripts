@@ -1,6 +1,9 @@
-from tkinter import TOP, Checkbutton, Entry, IntVar, Label, StringVar, Text
+import os
 
-from tkinterdnd2 import *
+os.environ["PYTHON_WARNINGS"] = "ignore::UserWarning"
+
+from tkinter import TOP, Checkbutton, Entry, IntVar, Label, StringVar
+from tkinterdnd2 import TkinterDnD, DND_ALL
 
 from matrix_parser import parser
 
@@ -29,7 +32,7 @@ def get_path(event):
 
 
 window = TkinterDnD.Tk()
-window.geometry("350x100")
+window.geometry("350x150")
 window.title("SOFYA tools - Matrix reader")
 
 nameVar = StringVar()
@@ -49,7 +52,7 @@ var1 = IntVar(value=1)
 c1 = Checkbutton(window, text="typ", variable=var1, onvalue=1, offvalue=0)
 c1.pack()
 
-entryWidget.drop_target_register(DND_ALL)
-entryWidget.dnd_bind("<<Drop>>", get_path)
+entryWidget.drop_target_register(DND_ALL)  # type: ignore
+entryWidget.dnd_bind("<<Drop>>", get_path)  # type: ignore
 
 window.mainloop()
