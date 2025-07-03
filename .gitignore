@@ -2,5 +2,5 @@
 tags
 .env
 __pycache__
-*.txt
+results*.txt
 env/
