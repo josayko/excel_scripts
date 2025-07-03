@@ -1,10 +1,7 @@
 [project]
 name = "excel-scripts"
-version = "0.1.0"
+version = "1.0.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = [
-    "pandas>=2.2.3",
-    "tkinterdnd2>=0.4.3",
-]
+dependencies = ["openpyxl>=3.1.5", "pandas>=2.2.3", "tkinterdnd2>=0.4.3"]
