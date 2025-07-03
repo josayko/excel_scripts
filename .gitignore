@@ -4,3 +4,7 @@ tags
 __pycache__
 results*.txt
 env/
+.DS_Store
+main.spec
+build
+dist
